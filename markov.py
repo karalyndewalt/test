@@ -53,8 +53,11 @@ def make_text(chains):
         # it would run for a very long time.
 
         word = choice(chains[key])
-        words.append(word)
-        key = (key[1], word)
+        if len(" ".join(words)) + len(word) < 140:
+            words.append(word)
+            key = (key[1], word)
+        else:
+            break
 
     return " ".join(words)
 
@@ -63,7 +66,19 @@ def tweet(chains):
     # Use Python os.environ to get at environmental variables
     # Note: you must run `source secrets.sh` before running this file
     # to make sure these environmental variables are set.
-    pass
+    api = twitter.Api(
+        consumer_key=os.environ['TWITTER_CONSUMER_KEY'],
+        consumer_secret=os.environ['TWITTER_CONSUMER_SECRET'],
+        access_token_key=os.environ['TWITTER_ACCESS_TOKEN_KEY'],
+        access_token_secret=os.environ['TWITTER_ACCESS_TOKEN_SECRET'])
+
+    while True:
+        status = api.PostUpdate(make_text(chains))
+        print status.text
+        print    # blank line
+        response = raw_input("Enter to tweet again [q to quit] > ")
+        if response.lower() == 'q':
+            break
 
 # Get the filenames from the user through a command line prompt, ex:
 # python markov.py green-eggs.txt shakespeare.txt

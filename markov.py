@@ -91,4 +91,4 @@ text = open_and_read_file(filenames)
 chains = make_chains(text)
 
 # Your task is to write a new function tweet, that will take chains as input
-# tweet(chains)
+tweet(chains)
